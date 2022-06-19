@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import Results from './Results';
 import Message from './Message'
+import { AiFillCopy } from 'react-icons/ai';
 
 function Mine({ userToken }) {
     let [message, setMessage] = useState({ message: "", theme: 0 });
@@ -47,7 +47,7 @@ function Mine({ userToken }) {
                         <Link className='item' to={`/results/${survey.id}`}>
                             <div>{survey.title}</div>
                             <hr />
-                            <div>{survey.responses_count} responses</div>
+                            <div>{survey.responses_count} <AiFillCopy fill='var(--accent)' /></div>
                         </Link>
                     </>
                 ))}

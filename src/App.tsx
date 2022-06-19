@@ -22,12 +22,14 @@ function App() {
   let navigate = useNavigate();
   let [userToken, setUserToken] = useState('');
   let location = useLocation().pathname.slice(1);
+
+
   useEffect(() => {
     let user_token = localStorage.getItem('user_token');
     if (user_token) { setUserToken(user_token) }
   }, [])
 
-
+  // removes token from state and localStorage
   let logout = () => {
     setUserToken('');
     localStorage.removeItem('user_token');
@@ -35,6 +37,7 @@ function App() {
   }
 
   return (
+    // I moved BrowserRouter up one level for useNavigate to work
     <div className="App">
       <header className="App-header">
         <Link to={`${userToken ? "/mine" : "/login"}`}>
