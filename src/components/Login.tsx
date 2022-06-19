@@ -7,6 +7,7 @@ let Login = ({ userToken, setUserToken }) => {
     let navigate = useNavigate();
 
     let login = async () => {
+        // try {
         let user = {
             email: (document.getElementById('login-email') as HTMLInputElement).value,
             password: (document.getElementById('login-password') as HTMLInputElement).value
@@ -20,16 +21,31 @@ let Login = ({ userToken, setUserToken }) => {
             body: JSON.stringify(user)
         })
         let result = await response.json();
-        if (result.status === 'success') {
-            let theme = result.status === 'success' ? 0 : 1;
+        console.log(result);
+        let theme = result.status === 'success' ? 0 : 1;
+        if (result.status === 'success' && result.authorisation.token) {
             setMessage({ message: result.message, theme })
             setTimeout(() => {
                 setMessage({ message: "", theme: 0 })
                 return navigate("/mine");
             }, 2000);
+            localStorage.setItem('user_token', result.authorisation.token);
+            await setUserToken(result.authorisation.token)
+        } else {
+            // TODO fix this logic, not displaying error message
+            setMessage({ message: 'response invalid', theme: 1 })
+            setTimeout(() => {
+                setMessage({ message: "", theme: 0 })
+                return navigate("/mine");
+            }, 2000);
         }
-        localStorage.setItem('user_token', result.authorisation.token);
-        await setUserToken(result.authorisation.token)
+        // } catch (error) {
+        //     setMessage({ message: 'error occured', theme: 1 })
+        //     setTimeout(() => {
+        //         setMessage({ message: "", theme: 0 })
+        //         return navigate("/mine");
+        //     }, 2000);
+        // }
     }
 
     return (
