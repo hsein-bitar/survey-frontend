@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Results from './Results';
+import Message from './Message'
 
 function Mine({ userToken }) {
+    let [message, setMessage] = useState({ message: "", theme: 0 });
     let [mySurveys, setMySurveys] = useState([]);
+
+    let navigate = useNavigate();
+    let user_token = userToken;
+    if (!user_token) {
+        user_token = localStorage.getItem('user_token');
+        if (!user_token) {
+            setMessage({ message: "Token Invalid", theme: 1 })
+            setTimeout(() => {
+                setMessage({ message: "", theme: 0 })
+                return navigate("/login");
+            }, 2000);
+        }
+    }
+
 
     useEffect(() => {
         populateMySurvey();
@@ -15,7 +31,7 @@ function Mine({ userToken }) {
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${userToken}`
+                'Authorization': `Bearer ${user_token}`
             }),
         })
         let result = await response.json();
@@ -23,15 +39,25 @@ function Mine({ userToken }) {
     }
 
 
-    return (
-        <div className='gallery'>{mySurveys.map((survey) => (
-            <>
-                <Link className='item' to={`/results/${survey.id}`}>
-                    <div>{survey.title}</div>
-                </Link>
+    return (<>
+        {mySurveys.length > 0 ?
+            <> <Message {...message} />
+                <div className='gallery'>{mySurveys.map((survey) => (
+                    <>
+                        <Link className='item' to={`/results/${survey.id}`}>
+                            <div>{survey.title}</div>
+                            <hr />
+                            <div>{survey.responses_count} responses</div>
+                        </Link>
+                    </>
+                ))}
+                </div>
+            </> : <>
+                <div className='center'>You have zero surveys, try creating some new ones</div>
             </>
-        ))}
-        </div>
+        }
+
+    </>
     )
 }
 

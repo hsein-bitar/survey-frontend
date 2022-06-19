@@ -28,6 +28,7 @@ let Login = ({ userToken, setUserToken }) => {
                 return navigate("/mine");
             }, 2000);
         }
+        localStorage.setItem('user_token', result.authorisation.token);
         await setUserToken(result.authorisation.token)
     }
 

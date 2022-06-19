@@ -49,7 +49,7 @@ function Create({ userToken }) {
             setMessage({ message: result.message, theme })
             setTimeout(() => {
                 setMessage({ message: "", theme: 0 })
-            }, 2000);
+            }, 3500);
         }
         console.log(result);
     }

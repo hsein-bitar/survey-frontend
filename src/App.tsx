@@ -12,18 +12,34 @@ import {
   Routes,
   Route,
   Link,
-  useLocation
+  useLocation,
+  useNavigate,
+  Navigate
 } from "react-router-dom";
 import Results from './components/Results';
 
 function App() {
+  let navigate = useNavigate();
   let [userToken, setUserToken] = useState('');
   let location = useLocation().pathname.slice(1);
+  useEffect(() => {
+    let user_token = localStorage.getItem('user_token');
+    if (user_token) { setUserToken(user_token) }
+  }, [])
+
+
+  let logout = () => {
+    setUserToken('');
+    localStorage.removeItem('user_token');
+    return navigate("/login");
+  }
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <Link to={`${userToken ? "/mine" : "/login"}`}>
+          <img src={logo} className="App-logo" alt="logo" />
+        </Link>
         {/* <p>
             Do your surveys for free!
           </p> */}
@@ -31,10 +47,10 @@ function App() {
           {/* TODO make this respond path dunamic with a small input */}
           {!userToken && <Link className={`${location === 'register' ? 'active' : ''}`} to="/register">Register</Link>}
           {!userToken && <Link className={`${location === 'login' ? 'active' : ''}`} to="/login">Login</Link>}
-          {userToken && <Link className={`${location === 'respond' ? 'active' : ''}`} to="/respond/15">Respond</Link>}
+          {userToken && <Link className={`${location.includes('respond') ? 'active' : ''}`} to="/respond/:id">Respond</Link>}
           {userToken && <Link className={`${location === 'create' ? 'active' : ''}`} to="/create">Create Survey</Link>}
           {userToken && <Link className={`${location === 'mine' ? 'active' : ''}`} to="/mine">My Surveys</Link>}
-          <img src={user_icon} className={`user-icon ${userToken ? 'user-active' : ''}`} alt="user-icon" />
+          <img src={user_icon} onClick={() => logout()} className={`user-icon ${userToken ? 'user-active' : ''}`} alt="user-icon" />
         </div>
       </header>
       <div className="container">
@@ -45,6 +61,7 @@ function App() {
           {<Route path="/create" element={<Create userToken={userToken} />} />}
           {<Route path="/mine" element={<Mine userToken={userToken} />} />}
           {<Route path="/results/:id" element={<Results userToken={userToken} />} />}
+          {<Route path="*" element={<Navigate to="/login" replace />} />}
         </Routes>
         <div className="footer">
           This App was created with react and typescript! Copyright &copy; 2022

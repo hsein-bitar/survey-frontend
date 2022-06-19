@@ -21,6 +21,7 @@ let Register = ({ userToken, setUserToken }) => {
             body: JSON.stringify(user)
         })
         let result = await response.json();
+        console.log(result);
         if (result.status === 'success') {
             let theme = result.status === 'success' ? 0 : 1;
             setMessage({ message: result.message, theme })
@@ -29,6 +30,7 @@ let Register = ({ userToken, setUserToken }) => {
                 return navigate("/mine");
             }, 2000);
         }
+        localStorage.setItem('user_token', result.authorisation.token);
         await setUserToken(result.authorisation.token)
     }
 
