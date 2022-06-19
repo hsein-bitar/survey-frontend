@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import Question from './Question';
 import LoadingSpinner from './Spinner';
 
-export default function Respond() {
+export default function Respond({ userToken }) {
 
     let params = useParams();
     const [questions, setQuestions] = useState([]);
@@ -69,7 +69,7 @@ export default function Respond() {
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvbG9naW4iLCJpYXQiOjE2NTU0NzA4MjcsImV4cCI6MTY1NTcxMDgyNywibmJmIjoxNjU1NDcwODI3LCJqdGkiOiI0YWVoNjN2ZnJlZFFvNEN1Iiwic3ViIjoiMyIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.DLh3DwaVu5uPCbSJ2TxRIGw5_f8vM-tOW8r74VKs_4A`
+                'Authorization': `Bearer ${userToken}`
             }),
             body: JSON.stringify(data)
         })
@@ -78,7 +78,12 @@ export default function Respond() {
     }
 
     const getSurvey = async () => {
-        const response = await fetch(`http://127.0.0.1:8000/api/v1/survey/show/${params.id}`);
+        const response = await fetch(`http://127.0.0.1:8000/api/v1/survey/show/${params.id}`, {
+            method: 'get',
+            headers: new Headers({
+                'Authorization': `Bearer ${userToken}`
+            }),
+        });
         const data = await response.json();
         return data
     }

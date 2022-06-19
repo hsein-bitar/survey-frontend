@@ -1,50 +1,56 @@
 import './App.css';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './assets/survey_logo.svg';
 import user_icon from './assets/user_icon.svg';
 
 import Respond from './components/Respond';
-// import Mine from './components/Mine';
-
+import Create from './components/Create';
+import Login from './components/Login';
+import Register from './components/Register';
+import Mine from './components/Mine';
 import {
-  BrowserRouter,
   Routes,
   Route,
-  Link
+  Link,
+  useLocation
 } from "react-router-dom";
-import Create from './components/Create';
+import Results from './components/Results';
 
 function App() {
+  let [userToken, setUserToken] = useState('');
+  let location = useLocation().pathname.slice(1);
+
   return (
-    <BrowserRouter>
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          {/* <p>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        {/* <p>
             Do your surveys for free!
           </p> */}
-          <div className="App-header-right">
-            <Link className='link' to="/respond/15">Respond</Link>
-            <Link to="/register">Register</Link>
-            <Link to="/login">Login</Link>
-            <Link to="/mine">My Surveys</Link>
-            <Link to="/create">Create Survey</Link>
-            <img src={user_icon} className="user-icon" alt="user-icon" />
-          </div>
-        </header>
-        <div className="container">
-          <Routes>
-            {/* TODO add all routes placeholders */}
-            <Route path="/respond/:id" element={<Respond />} />
-            <Route path="/create" element={<Create />} />
-            {/* <Route path="/mine" element={<Mine />} /> */}
-          </Routes>
-          <div className="footer">
-            This App was created with react and typescript! Copyright &copy; 2022
-          </div>
+        <div className="App-header-right">
+          {/* TODO make this respond path dunamic with a small input */}
+          {!userToken && <Link className={`${location === 'register' ? 'active' : ''}`} to="/register">Register</Link>}
+          {!userToken && <Link className={`${location === 'login' ? 'active' : ''}`} to="/login">Login</Link>}
+          {userToken && <Link className={`${location === 'respond' ? 'active' : ''}`} to="/respond/15">Respond</Link>}
+          {userToken && <Link className={`${location === 'create' ? 'active' : ''}`} to="/create">Create Survey</Link>}
+          {userToken && <Link className={`${location === 'mine' ? 'active' : ''}`} to="/mine">My Surveys</Link>}
+          <img src={user_icon} className={`user-icon ${userToken ? 'user-active' : ''}`} alt="user-icon" />
+        </div>
+      </header>
+      <div className="container">
+        <Routes>
+          {<Route path="/login" element={<Login userToken={userToken} setUserToken={setUserToken} />} />}
+          {<Route path="/register" element={<Register userToken={userToken} setUserToken={setUserToken} />} />}
+          {<Route path="/respond/:id" element={<Respond userToken={userToken} />} />}
+          {<Route path="/create" element={<Create userToken={userToken} />} />}
+          {<Route path="/mine" element={<Mine userToken={userToken} />} />}
+          {<Route path="/results/:id" element={<Results userToken={userToken} />} />}
+        </Routes>
+        <div className="footer">
+          This App was created with react and typescript! Copyright &copy; 2022
         </div>
       </div>
-    </BrowserRouter>
+    </div >
   );
 }
 

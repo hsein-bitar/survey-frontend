@@ -4,8 +4,7 @@ import React, { useEffect, useState } from 'react'
 import QuestionBuilder from './QuestionBuilder'
 import Message from './Message';
 
-
-function Create() {
+function Create({ userToken }) {
     let [message, setMessage] = useState({ message: "", theme: 0 })
     let [type, setType] = useState('text');
     let [questions, setQuestions] = useState([]);
@@ -40,7 +39,7 @@ function Create() {
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3YxL2F1dGgvbG9naW4iLCJpYXQiOjE2NTU0NzA4MjcsImV4cCI6MTY1NTcxMDgyNywibmJmIjoxNjU1NDcwODI3LCJqdGkiOiI0YWVoNjN2ZnJlZFFvNEN1Iiwic3ViIjoiMyIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.DLh3DwaVu5uPCbSJ2TxRIGw5_f8vM-tOW8r74VKs_4A`
+                'Authorization': `Bearer ${userToken}`
             }),
             body: JSON.stringify(survey)
         })
