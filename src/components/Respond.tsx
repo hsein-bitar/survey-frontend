@@ -118,6 +118,11 @@ export default function Respond({ userToken }) {
         return data
     }
 
+    let goToSurvey = () => {
+        let id = (document.getElementById('target-survey') as HTMLInputElement).value;
+        return navigate(`/respond/${id}`);
+    }
+
     useEffect(() => {
         // if user is not signed in, redirect them out
         if (!user_token) {
@@ -140,10 +145,6 @@ export default function Respond({ userToken }) {
 
     }, [survey_id]);
 
-    let goToSurvey = () => {
-        let id = (document.getElementById('target-survey') as HTMLInputElement).value;
-        return navigate(`/respond/${id}`);
-    }
 
     return (
         <><Message {...message} />
