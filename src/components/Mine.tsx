@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import Message from './Message'
 import { AiFillCopy } from 'react-icons/ai';
+import Message from './Message'
 
+// component that lists all surveys a certain user has created
 function Mine({ userToken }) {
     let [message, setMessage] = useState({ message: "", theme: 0 });
     let [mySurveys, setMySurveys] = useState([]);
 
     let navigate = useNavigate();
-    let user_token = userToken;
-    if (!user_token) {
-        user_token = localStorage.getItem('user_token');
+    let user_token = userToken || localStorage.getItem('user_token');
+
+    useEffect(() => {
         if (!user_token) {
             setMessage({ message: "Token Invalid", theme: 1 })
             setTimeout(() => {
                 setMessage({ message: "", theme: 0 })
                 return navigate("/login");
-            }, 2000);
+            }, 1500);
         }
-    }
-
-
-    useEffect(() => {
         populateMySurvey();
     }, [])
 
@@ -35,16 +32,16 @@ function Mine({ userToken }) {
             }),
         })
         let result = await response.json();
-        setMySurveys(result.surveys);
+        console.log(result);
+        setMySurveys(result.surveys || []);
     }
 
-
-    return (<>
-        {mySurveys.length > 0 ?
-            <> <Message {...message} />
+    let renderMySurveys = () => {
+        return mySurveys.length > 0 ?
+            <>
                 <div className='gallery'>{mySurveys.map((survey) => (
                     <>
-                        <Link className='item' to={`/results/${survey.id}`}>
+                        <Link className='item' key={survey.id} to={`/results/${survey.id}`}>
                             <div>{survey.title}</div>
                             <hr />
                             <div>{survey.responses_count} <AiFillCopy fill='var(--accent)' /></div>
@@ -55,8 +52,11 @@ function Mine({ userToken }) {
             </> : <>
                 <div className='center'>You have zero surveys, try creating some new ones</div>
             </>
-        }
+    }
 
+    return (<>
+        <Message {...message} />
+        {renderMySurveys()}
     </>
     )
 }

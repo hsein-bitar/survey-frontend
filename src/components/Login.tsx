@@ -5,9 +5,7 @@ import Message from './Message'
 let Login = ({ userToken, setUserToken }) => {
     let [message, setMessage] = useState({ message: "", theme: 0 });
     let navigate = useNavigate();
-
     let login = async () => {
-        // try {
         let user = {
             email: (document.getElementById('login-email') as HTMLInputElement).value,
             password: (document.getElementById('login-password') as HTMLInputElement).value
@@ -28,28 +26,21 @@ let Login = ({ userToken, setUserToken }) => {
             setTimeout(() => {
                 setMessage({ message: "", theme: 0 })
                 return navigate("/mine");
-            }, 2000);
+            }, 1500);
             localStorage.setItem('user_token', result.authorisation.token);
             await setUserToken(result.authorisation.token)
         } else {
-            // TODO fix this logic, not displaying error message
-            setMessage({ message: 'response invalid', theme: 1 })
+            setMessage({ message: 'Invalid Credentials', theme: 1 })
             setTimeout(() => {
                 setMessage({ message: "", theme: 0 })
-                return navigate("/mine");
-            }, 2000);
+            }, 1500);
         }
-        // } catch (error) {
-        //     setMessage({ message: 'error occured', theme: 1 })
-        //     setTimeout(() => {
-        //         setMessage({ message: "", theme: 0 })
-        //         return navigate("/mine");
-        //     }, 2000);
-        // }
+
     }
 
     return (
-        <><Message {...message} />
+        <>
+            <Message {...message} />
             {!userToken ?
                 <form id="login-form" name="login-form" action="" noValidate>
                     <label htmlFor="email">Enter your email:</label>

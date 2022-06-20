@@ -22,6 +22,8 @@ export default function Respond({ userToken }) {
         let multiples = document.querySelectorAll('.flex-options');
         let selects = document.querySelectorAll('select');
         let dates = document.querySelectorAll('input[type="date"]');
+
+        // fill answers of questions type: text
         texts.forEach((text) => {
             let a = {
                 "question_id": parseInt(text.id),
@@ -31,6 +33,8 @@ export default function Respond({ userToken }) {
             }
             data.answers.push(a);
         })
+
+        // fill answers of questions type: multiple
         multiples.forEach((multiple) => {
             console.log(multiple);
             let a = {
@@ -57,6 +61,8 @@ export default function Respond({ userToken }) {
             }
             data.answers.push(a);
         })
+
+        // fill answers of questions type:date
         dates.forEach(date => {
             let a = {
                 "question_id": parseInt(date.id),
@@ -67,6 +73,17 @@ export default function Respond({ userToken }) {
             data.answers.push(a);
         })
 
+        // validate that the user has filled all the answers
+        if (data.answers.length < questions.length) {
+            setMessage({ message: 'you have missing fields', theme: 1 })
+            setTimeout(() => {
+                setMessage({ message: "", theme: 0 })
+                return navigate("/mine");
+            }, 1500);
+            return
+        }
+
+        // input is valid, send to backend
         let response = await fetch(`http://127.0.0.1:8000/api/v1/survey/respond/`, {
             method: 'post',
             headers: new Headers({
@@ -76,6 +93,7 @@ export default function Respond({ userToken }) {
             }),
             body: JSON.stringify(data)
         })
+
         // TODO show something when request succeeds
         let result = await response.json();
         if (result.status === 'success') {
@@ -84,10 +102,11 @@ export default function Respond({ userToken }) {
             setTimeout(() => {
                 setMessage({ message: "", theme: 0 })
                 return navigate("/mine");
-            }, 2000);
+            }, 1500);
         }
     }
 
+    // function that gets the survey of a certain id
     const getSurvey = async () => {
         const response = await fetch(`http://127.0.0.1:8000/api/v1/survey/show/${survey_id}`, {
             method: 'get',
@@ -122,7 +141,7 @@ export default function Respond({ userToken }) {
                     <div className='enter-survey-id'>
                         <label htmlFor="target-survey">Enter survey id:</label>
                         <input type="number" id='target-survey' name='target-survey' />
-                        <button className='primary' onClick={() => goToSurvey()}>Submit</button>
+                        <button className='primary' onClick={() => goToSurvey()}>Check</button>
                     </div>
                 </> : <>
                     <h4 className="title">{surveyTitle}</h4>

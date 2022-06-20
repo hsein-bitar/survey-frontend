@@ -24,6 +24,8 @@ function App() {
   let location = useLocation().pathname.slice(1);
 
 
+
+  // if user was signed in and closed tab, retrieve the token and let him in
   useEffect(() => {
     let user_token = localStorage.getItem('user_token');
     if (user_token) { setUserToken(user_token) }
@@ -37,7 +39,7 @@ function App() {
   }
 
   return (
-    // I moved BrowserRouter up one level for useNavigate to work
+    // I moved BrowserRouter / Router up one level for useNavigate to work
     <div className="App">
       <header className="App-header">
         <Link to={`${userToken ? "/mine" : "/login"}`}>
@@ -56,6 +58,8 @@ function App() {
           <img src={user_icon} onClick={() => logout()} className={`user-icon ${userToken ? 'user-active' : ''}`} alt="user-icon" />
         </div>
       </header>
+
+      {/* render all components inside this */}
       <div className="container">
         <Routes>
           {<Route path="/login" element={<Login userToken={userToken} setUserToken={setUserToken} />} />}
@@ -67,7 +71,7 @@ function App() {
           {<Route path="*" element={<Navigate to="/login" replace />} />}
         </Routes>
         <div className="footer">
-          This App was created with react and typescript! Copyright &copy; 2022
+          This App was created with react and typescript Copyright &copy; 2022
         </div>
       </div>
     </div >

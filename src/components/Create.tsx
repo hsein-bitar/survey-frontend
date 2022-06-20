@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from "react-router-dom";
 // import LoadingSpinner from './Spinner';
 
 import QuestionBuilder from './QuestionBuilder'
@@ -8,17 +9,18 @@ function Create({ userToken }) {
     let [message, setMessage] = useState({ message: "", theme: 0 })
     let [type, setType] = useState('text');
     let [questions, setQuestions] = useState([]);
+    let navigate = useNavigate();
+    let user_token = userToken || localStorage.getItem('user_token');
 
-    // useEffect(() => {
-    //     let q: any = {
-    //         "type": "multiple",
-    //         "content": "tick the languages that you use often",
-    //         "options": ['arabic', 'english', 'french', 'german', 'italian']
-    //     }
-    //     setQuestions([...questions, q]);
-
-    //     // eslint-disable-next-line
-    // }, []);
+    useEffect(() => {
+        if (!user_token) {
+            setMessage({ message: "Token Invalid", theme: 1 })
+            setTimeout(() => {
+                setMessage({ message: "", theme: 0 })
+                return navigate("/login");
+            }, 1500);
+        }
+    }, []);
     let addQuestion = () => {
         let q = {
             "type": type,

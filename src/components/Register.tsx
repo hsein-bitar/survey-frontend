@@ -21,21 +21,26 @@ let Register = ({ userToken, setUserToken }) => {
             body: JSON.stringify(user)
         })
         let result = await response.json();
-        console.log(result);
-        if (result.status === 'success') {
-            let theme = result.status === 'success' ? 0 : 1;
+        let theme = result.status === 'success' ? 0 : 1;
+        if (result.status === 'success' && result.authorisation.token) {
             setMessage({ message: result.message, theme })
             setTimeout(() => {
                 setMessage({ message: "", theme: 0 })
                 return navigate("/mine");
-            }, 2000);
+            }, 1500);
+            localStorage.setItem('user_token', result.authorisation.token);
+            await setUserToken(result.authorisation.token)
+        } else {
+            setMessage({ message: 'Invalid Credentials', theme: 1 })
+            setTimeout(() => {
+                setMessage({ message: "", theme: 0 })
+            }, 1500);
         }
-        localStorage.setItem('user_token', result.authorisation.token);
-        await setUserToken(result.authorisation.token)
     }
 
     return (
-        <><Message {...message} />
+        <>
+            <Message {...message} />
             {!userToken ?
                 <form id="register-form" name="register-form" action="" noValidate>
                     <label htmlFor="name">Enter your name:</label>
