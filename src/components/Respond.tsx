@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom';
 import Question from './Question';
-import LoadingSpinner from './Spinner';
 import Message from './Message';
 
 export default function Respond({ userToken }) {
@@ -10,6 +9,7 @@ export default function Respond({ userToken }) {
     let [message, setMessage] = useState({ message: "", theme: 0 });
     const [questions, setQuestions] = useState([]);
     const [surveyTitle, setSurveyTitle] = useState("");
+    let user_token = userToken || localStorage.getItem('user_token');
 
     let submitResponse = async () => {
         let data = {
@@ -89,7 +89,7 @@ export default function Respond({ userToken }) {
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${userToken}`
+                'Authorization': `Bearer ${user_token}`
             }),
             body: JSON.stringify(data)
         })
@@ -107,7 +107,7 @@ export default function Respond({ userToken }) {
     }
 
     // function that gets the survey of a certain id
-    const getSurvey = async () => {
+    const getSurvey = async (survey_id) => {
         const response = await fetch(`http://127.0.0.1:8000/api/v1/survey/show/${survey_id}`, {
             method: 'get',
             headers: new Headers({
@@ -119,10 +119,22 @@ export default function Respond({ userToken }) {
     }
 
     useEffect(() => {
+        // if user is not signed in, redirect them out
+        if (!user_token) {
+            setMessage({ message: "Token Invalid", theme: 1 })
+            setTimeout(() => {
+                setMessage({ message: "", theme: 0 })
+                return navigate("/login");
+            }, 1500);
+        }
+
+        // get the survey questions to answer
         const populate = async () => {
-            const data = await getSurvey();
-            setSurveyTitle(data.survey[0].title);
-            setQuestions(data.survey[0].questions);
+            if (survey_id) {
+                const data = await getSurvey(survey_id);
+                setSurveyTitle(data.survey[0].title);
+                setQuestions(data.survey[0].questions);
+            }
         }
         populate();
 

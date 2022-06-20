@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
-// import LoadingSpinner from './Spinner';
 
 import QuestionBuilder from './QuestionBuilder'
 import Message from './Message';
@@ -41,7 +40,7 @@ function Create({ userToken }) {
             headers: new Headers({
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Authorization': `Bearer ${userToken}`
+                'Authorization': `Bearer ${user_token}`
             }),
             body: JSON.stringify(survey)
         })

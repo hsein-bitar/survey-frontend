@@ -41,8 +41,8 @@ function Mine({ userToken }) {
             <>
                 <div className='gallery'>{mySurveys.map((survey) => (
                     <>
-                        <Link className='item' key={survey.id} to={`/results/${survey.id}`}>
-                            <div>{survey.title}</div>
+                        <Link className='item' to={`/results/${survey.id}`}>
+                            <div key={survey.id}>{survey.title}</div>
                             <hr />
                             <div>{survey.responses_count} <AiFillCopy fill='var(--accent)' /></div>
                         </Link>

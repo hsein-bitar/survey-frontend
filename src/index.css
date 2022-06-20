@@ -37,8 +37,9 @@ input[type="checkbox"] {
 /* control the theme using these variable */
 :root {
   --accent: #FF385C;
-  --input-dark: #a5a5a5;
+  --input-dark: #bcbcbc;
   --dark: #1f1f1f;
+  /* --input-dark: #a5e4ff; */
 
   --input-light: #e8e8e8;
 
